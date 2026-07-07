@@ -18,11 +18,13 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "tim.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "oled.h"
+#include "key.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -54,7 +56,13 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+    if (htim->Instance == TIM1)   // 判断是否为 TIM1 触发的更新中断
+    {
+        Key_loop();               // 你的按键扫描函数
+    }
+}
 /* USER CODE END 0 */
 
 /**
@@ -72,7 +80,6 @@ int main(void)
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
-
   /* USER CODE BEGIN Init */
   OLED_Init();
   /* USER CODE END Init */
@@ -86,7 +93,9 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_TIM1_Init();
   /* USER CODE BEGIN 2 */
+  int number = 0,KeyNum=0;
 
   /* USER CODE END 2 */
 
@@ -97,12 +106,21 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	
-	  OLED_ShowNum(0,0,9,1,OLED_6X8);
-	  OLED_Update();
+    KeyNum = key_get();
 
-  }
+    if (KeyNum!=0)
+    {
+			if(KeyNum==1){number++;}
+			if(KeyNum==2){number++;}
+			if(KeyNum==3){number++;}
+			if(KeyNum==4){number++;}
+    }
+    OLED_ShowNum(0,0,number,1,OLED_6X8);
+	  OLED_Update();
   /* USER CODE END 3 */
+
+  
+  } 
 }
 
 /**
