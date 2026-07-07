@@ -22,7 +22,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "oled.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -74,7 +74,7 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-
+  OLED_Init();
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -97,6 +97,10 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	
+	  OLED_ShowNum(0,0,9,1,OLED_6X8);
+	  OLED_Update();
+
   }
   /* USER CODE END 3 */
 }
