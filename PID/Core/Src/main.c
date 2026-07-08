@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "stm32f1xx_hal_tim.h"
 #include "tim.h"
 #include "gpio.h"
 
@@ -56,13 +57,7 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
-{
-    if (htim->Instance == TIM1)   // 判断是否为 TIM1 触发的更新中断
-    {
-        Key_loop();               // 你的按键扫描函数
-    }
-}
+
 /* USER CODE END 0 */
 
 /**
@@ -80,6 +75,7 @@ int main(void)
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
+
   /* USER CODE BEGIN Init */
   OLED_Init();
   /* USER CODE END Init */
@@ -95,8 +91,9 @@ int main(void)
   MX_GPIO_Init();
   MX_TIM1_Init();
   /* USER CODE BEGIN 2 */
-  int number = 0,KeyNum=0;
-
+  int number = 0,KeyNum = 0;
+  //启动定时器中断
+  HAL_TIM_Base_Start_IT(&htim1);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -117,10 +114,8 @@ int main(void)
     }
     OLED_ShowNum(0,0,number,1,OLED_6X8);
 	  OLED_Update();
+  }
   /* USER CODE END 3 */
-
-  
-  } 
 }
 
 /**
@@ -163,6 +158,41 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{   //判断是否为TIM1的中断
+    if (htim->Instance == TIM1)   // 判断是否为 TIM1 触发的更新中断
+    {
+        Key_loop();               // 你的按键扫描函数
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* USER CODE END 4 */
 

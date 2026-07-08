@@ -65,10 +65,10 @@ void Error_Handler(void);
 #define Column2_GPIO_Port GPIOB
 #define Column1_Pin GPIO_PIN_1
 #define Column1_GPIO_Port GPIOB
-#define SCL_Pin GPIO_PIN_8
-#define SCL_GPIO_Port GPIOB
-#define SDA_Pin GPIO_PIN_9
-#define SDA_GPIO_Port GPIOB
+#define SCL_Pin GPIO_PIN_9
+#define SCL_GPIO_Port GPIOA
+#define SDA_Pin GPIO_PIN_10
+#define SDA_GPIO_Port GPIOA
 
 /* USER CODE BEGIN Private defines */
 
