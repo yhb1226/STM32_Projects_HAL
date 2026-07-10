@@ -42,18 +42,37 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined library search paths
 )
 
+# ========== 方案A：手动逐个添加Hardware源文件（推荐，稳定可控） ==========
 # Add sources to executable
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user sources here
-    Core/Src/oled.c
-    Core/Src/oled_data.c
-    Core/Src/key.c
+    
+
+    # ===== 新增：Hardware文件夹下的所有.c文件，有几个加几个 =====
+    Hardware/key.c
+    Hardware/oled.c
+    Hardware/oled_data.c
 )
 
 # Add include paths
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined include paths
+    # ===== 新增：Hardware头文件搜索路径 =====
+    Hardware
 )
+
+# ========== 方案B：自动扫描Hardware下所有.c（文件多时用，二选一） ==========
+# 如果你想用自动通配，把上面target_sources替换成下面这段：
+# file(GLOB HARDWARE_SOURCES "Hardware/*.c")
+# target_sources(${CMAKE_PROJECT_NAME} PRIVATE
+#     Core/Src/oled.c
+#     Core/Src/oled_data.c
+#     Core/Src/key.c
+#     ${HARDWARE_SOURCES}
+# )
+# target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
+#     Hardware
+# )
 
 # Add project symbols (macros)
 target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
