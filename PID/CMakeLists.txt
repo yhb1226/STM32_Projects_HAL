@@ -53,6 +53,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Hardware/oled.c
     Hardware/oled_data.c
     Hardware/iic.c
+    Hardware/mpu6050.c
 )
 
 # Add include paths
