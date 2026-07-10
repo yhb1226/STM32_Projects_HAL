@@ -25,6 +25,9 @@
 /* USER CODE BEGIN Includes */
 #include "oled.h"
 #include "key.h"
+#include "iic.h"
+#include "mpu6050.h"
+#include <stdint.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -77,6 +80,7 @@ int main(void)
 
   /* USER CODE BEGIN Init */
   OLED_Init();
+  MPU6050_Init();
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -91,6 +95,7 @@ int main(void)
   MX_TIM1_Init();
   /* USER CODE BEGIN 2 */
   int number = 0,KeyNum = 0;
+  int16_t AX,AY,AZ,GX,GY,GZ;
   //启动定时器中断
   HAL_TIM_Base_Start_IT(&htim1);
   /* USER CODE END 2 */
@@ -108,11 +113,13 @@ int main(void)
 			if(KeyNum==3){number++;}
 			if(KeyNum==4){number++;}
     }
-    OLED_ShowNum(0,0,number,1,OLED_6X8);
-	  OLED_Update();
+    //OLED_ShowNum(0,0,number,1,OLED_6X8);
+	  
+    MPU6050_GetData(&AX, &AY, &AZ, &GX, &GY, &GZ);
 
-
-
+    //OLED_Printf(0, 0, OLED_8X16, "+06d", AX);
+    OLED_ShowNum(0,0,AX,6,OLED_6X8);
+    OLED_Update();
 
 
 

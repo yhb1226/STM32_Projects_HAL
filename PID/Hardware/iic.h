@@ -1,6 +1,8 @@
 #ifndef __IIC_H
 #define __IIC_H
 
+#include "stdint.h"
+
 void IIC_Init(void);
 void IIC_Start(void);
 void IIC_Stop(void);

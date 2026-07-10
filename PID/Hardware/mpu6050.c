@@ -1,4 +1,5 @@
 #include "iic.h"
+#include "mpu6050_reg.h"
 
 #define MPU6050_ADDRESS		0xD0		//MPU6050的I2C从机地址
 
