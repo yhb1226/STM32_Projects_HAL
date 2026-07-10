@@ -18,7 +18,6 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "stm32f1xx_hal_tim.h"
 #include "tim.h"
 #include "gpio.h"
 
@@ -100,9 +99,6 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    /* USER CODE END WHILE */
-
-    /* USER CODE BEGIN 3 */
     KeyNum = key_get();
 
     if (KeyNum!=0)
@@ -114,6 +110,27 @@ int main(void)
     }
     OLED_ShowNum(0,0,number,1,OLED_6X8);
 	  OLED_Update();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /* USER CODE END WHILE */
+
+    /* USER CODE BEGIN 3 */
+    
   }
   /* USER CODE END 3 */
 }
