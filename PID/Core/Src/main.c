@@ -59,7 +59,8 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+  int g_key_loop_time_us = 0;
+  int16_t AX,AY,AZ,GX,GY,GZ;
 /* USER CODE END 0 */
 
 /**
@@ -79,8 +80,7 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-  OLED_Init();
-  MPU6050_Init();
+  
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -93,11 +93,15 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_TIM1_Init();
+  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
+  //初始化放在开启时钟之后和GPIO初始化之后
+  OLED_Init();
+  MPU6050_Init();
   int number = 0,KeyNum = 0;
-  int16_t AX,AY,AZ,GX,GY,GZ;
   //启动定时器中断
   HAL_TIM_Base_Start_IT(&htim1);
+  HAL_TIM_Base_Start(&htim2);   // 仅启动计数，不启动中断
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -117,8 +121,12 @@ int main(void)
 	  
     MPU6050_GetData(&AX, &AY, &AZ, &GX, &GY, &GZ);
 
-    //OLED_Printf(0, 0, OLED_8X16, "+06d", AX);
-    OLED_ShowNum(0,0,AX,6,OLED_6X8);
+    OLED_Printf(0, 0, OLED_8X16, "%+06d", g_key_loop_time_us);
+    OLED_Printf(0, 16, OLED_8X16, "%+06d", AY);
+    OLED_Printf(0, 32, OLED_8X16, "%+06d", AZ);
+    OLED_Printf(64, 0, OLED_8X16, "%+06d", GX);
+    OLED_Printf(64, 16, OLED_8X16, "%+06d", GY);
+    OLED_Printf(64, 32, OLED_8X16, "%+06d", GZ);
     OLED_Update();
 
 
@@ -190,14 +198,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
         Key_loop();               // 你的按键扫描函数
     }
 }
-
-
-
-
-
-
-
-
 
 
 

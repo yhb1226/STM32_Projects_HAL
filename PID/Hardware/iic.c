@@ -22,8 +22,8 @@ uint8_t IIC_R_SDA(void)
 
 void IIC_Init(void)
 {
-    IIC_W_SCL(1);
-    IIC_W_SDA(1);
+    HAL_GPIO_WritePin(IIC_SCL_GPIO_Port, IIC_SCL_Pin, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(IIC_SDA_GPIO_Port, IIC_SDA_Pin, GPIO_PIN_SET);
 }
 
 //IIC开始
