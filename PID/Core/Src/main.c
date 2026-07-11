@@ -59,7 +59,6 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-  int g_key_loop_time_us = 0;
   int16_t AX,AY,AZ,GX,GY,GZ;
 /* USER CODE END 0 */
 
@@ -102,6 +101,8 @@ int main(void)
   //启动定时器中断
   HAL_TIM_Base_Start_IT(&htim1);
   HAL_TIM_Base_Start(&htim2);   // 仅启动计数，不启动中断
+  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
+  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -121,7 +122,7 @@ int main(void)
 	  
     MPU6050_GetData(&AX, &AY, &AZ, &GX, &GY, &GZ);
 
-    OLED_Printf(0, 0, OLED_8X16, "%+06d", g_key_loop_time_us);
+    OLED_Printf(0, 0, OLED_8X16, "%+06d", AX);
     OLED_Printf(0, 16, OLED_8X16, "%+06d", AY);
     OLED_Printf(0, 32, OLED_8X16, "%+06d", AZ);
     OLED_Printf(64, 0, OLED_8X16, "%+06d", GX);
@@ -195,7 +196,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {   //判断是否为TIM1的中断
     if (htim->Instance == TIM1)   // 判断是否为 TIM1 触发的更新中断
     {
-        Key_loop();               // 你的按键扫描函数
+       MPU6050_GetData(&AX, &AY, &AZ, &GX, &GY, &GZ);
+      Key_loop();               // 你的按键扫描函数
     }
 }
 

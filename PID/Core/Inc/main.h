@@ -69,6 +69,14 @@ void Error_Handler(void);
 #define IIC_SCL_GPIO_Port GPIOB
 #define IIC_SDA_Pin GPIO_PIN_11
 #define IIC_SDA_GPIO_Port GPIOB
+#define MOTOR_LEFT1_Pin GPIO_PIN_12
+#define MOTOR_LEFT1_GPIO_Port GPIOB
+#define MOTOR_LEFT2_Pin GPIO_PIN_13
+#define MOTOR_LEFT2_GPIO_Port GPIOB
+#define MOTOR_RIGHT1_Pin GPIO_PIN_14
+#define MOTOR_RIGHT1_GPIO_Port GPIOB
+#define MOTOR_RIGHT2_Pin GPIO_PIN_15
+#define MOTOR_RIGHT2_GPIO_Port GPIOB
 #define SCL_Pin GPIO_PIN_9
 #define SCL_GPIO_Port GPIOA
 #define SDA_Pin GPIO_PIN_10
