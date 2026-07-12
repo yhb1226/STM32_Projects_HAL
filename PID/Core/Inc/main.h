@@ -77,10 +77,10 @@ void Error_Handler(void);
 #define MOTOR_RIGHT1_GPIO_Port GPIOB
 #define MOTOR_RIGHT2_Pin GPIO_PIN_15
 #define MOTOR_RIGHT2_GPIO_Port GPIOB
-#define SCL_Pin GPIO_PIN_9
-#define SCL_GPIO_Port GPIOA
-#define SDA_Pin GPIO_PIN_10
-#define SDA_GPIO_Port GPIOA
+#define SCL_Pin GPIO_PIN_8
+#define SCL_GPIO_Port GPIOB
+#define SDA_Pin GPIO_PIN_9
+#define SDA_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 

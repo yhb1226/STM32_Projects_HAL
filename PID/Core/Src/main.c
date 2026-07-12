@@ -18,8 +18,8 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "stm32f1xx_hal_tim.h"
 #include "tim.h"
+#include "usart.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -30,6 +30,7 @@
 #include "mpu6050.h"
 #include "motor.h"
 #include "encoder.h"
+#include "serial.h"
 #include <stdint.h>
 /* USER CODE END Includes */
 
@@ -66,6 +67,7 @@ void SystemClock_Config(void);
   int number = 0,KeyNum = 0;
   int8_t PWM_L=30,PWM_R=30;
   int speedl = 0,speedr = 0;
+  extern volatile uint8_t Serial_RxData;
 /* USER CODE END 0 */
 
 /**
@@ -101,6 +103,7 @@ int main(void)
   MX_TIM2_Init();
   MX_TIM3_Init();
   MX_TIM4_Init();
+  MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
   //初始化放在开启时钟之后和GPIO初始化之后
   OLED_Init();
@@ -113,6 +116,9 @@ int main(void)
   HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
   HAL_TIM_Encoder_Start(&htim3, TIM_CHANNEL_ALL);
   HAL_TIM_Encoder_Start(&htim4, TIM_CHANNEL_ALL);
+  HAL_UART_Receive_IT(&huart1, (uint8_t *)&Serial_RxData, 1);
+  Serial_SendString("Hello");
+  Serial_Printf("world");
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -130,6 +136,12 @@ int main(void)
 
     }
 
+    if(Serial_GetRxFlag() == 1)
+    {
+      uint8_t RxData = Serial_GetRxData();
+      OLED_Printf(0, 0, OLED_6X8, "RxData:%02X", RxData);
+      OLED_Update();
+    }
 
     
     __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 50);
@@ -140,8 +152,8 @@ int main(void)
     // Motor_SetPWM(1, PWM_L);
     // Motor_SetPWM(2, PWM_R);
 
-     OLED_ShowNum(0,0,speedl,6,OLED_6X8);
-     OLED_ShowNum(0,0,speedr,6,OLED_6X8);
+    //  OLED_ShowNum(0,0,speedl,6,OLED_6X8);
+    //  OLED_ShowNum(0,0,speedr,6,OLED_6X8);
 	  
     OLED_Update();
 

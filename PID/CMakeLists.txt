@@ -56,6 +56,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Hardware/mpu6050.c
     Hardware/motor.c
     Hardware/encoder.c
+    Hardware/serial.c
 )
 
 # Add include paths
