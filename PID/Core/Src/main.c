@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "stm32f1xx_hal_tim.h"
 #include "tim.h"
 #include "gpio.h"
 
@@ -27,6 +28,8 @@
 #include "key.h"
 #include "iic.h"
 #include "mpu6050.h"
+#include "motor.h"
+#include "encoder.h"
 #include <stdint.h>
 /* USER CODE END Includes */
 
@@ -60,6 +63,9 @@ void SystemClock_Config(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
   int16_t AX,AY,AZ,GX,GY,GZ;
+  int number = 0,KeyNum = 0;
+  int8_t PWM_L=30,PWM_R=30;
+  int speedl = 0,speedr = 0;
 /* USER CODE END 0 */
 
 /**
@@ -93,16 +99,20 @@ int main(void)
   MX_GPIO_Init();
   MX_TIM1_Init();
   MX_TIM2_Init();
+  MX_TIM3_Init();
+  MX_TIM4_Init();
   /* USER CODE BEGIN 2 */
   //初始化放在开启时钟之后和GPIO初始化之后
   OLED_Init();
   MPU6050_Init();
-  int number = 0,KeyNum = 0;
+  
   //启动定时器中断
   HAL_TIM_Base_Start_IT(&htim1);
-  HAL_TIM_Base_Start(&htim2);   // 仅启动计数，不启动中断
+  //HAL_TIM_Base_Start(&htim2);   // 仅启动计数，不启动中断
   HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
   HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
+  HAL_TIM_Encoder_Start(&htim3, TIM_CHANNEL_ALL);
+  HAL_TIM_Encoder_Start(&htim4, TIM_CHANNEL_ALL);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -113,26 +123,27 @@ int main(void)
 
     if (KeyNum!=0)
     {
-			if(KeyNum==1){number++;}
-			if(KeyNum==2){number++;}
-			if(KeyNum==3){number++;}
-			if(KeyNum==4){number++;}
+			 if(KeyNum==1){PWM_L += 10;}
+			 if(KeyNum==2){PWM_L += 10;}
+			 if(KeyNum==3){PWM_R += 10;}
+			 if(KeyNum==4){PWM_R += 10;}
+
     }
-    //OLED_ShowNum(0,0,number,1,OLED_6X8);
+
+
+    
+    __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 50);
+    __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, 50);
+
+    HAL_GPIO_WritePin(MOTOR_LEFT1_GPIO_Port, MOTOR_LEFT1_Pin, GPIO_PIN_SET);//PB12置高电平
+    HAL_GPIO_WritePin(MOTOR_LEFT2_GPIO_Port, MOTOR_LEFT2_Pin, GPIO_PIN_RESET);//PB13置低电平
+    // Motor_SetPWM(1, PWM_L);
+    // Motor_SetPWM(2, PWM_R);
+
+     OLED_ShowNum(0,0,speedl,6,OLED_6X8);
+     OLED_ShowNum(0,0,speedr,6,OLED_6X8);
 	  
-    MPU6050_GetData(&AX, &AY, &AZ, &GX, &GY, &GZ);
-
-    OLED_Printf(0, 0, OLED_8X16, "%+06d", AX);
-    OLED_Printf(0, 16, OLED_8X16, "%+06d", AY);
-    OLED_Printf(0, 32, OLED_8X16, "%+06d", AZ);
-    OLED_Printf(64, 0, OLED_8X16, "%+06d", GX);
-    OLED_Printf(64, 16, OLED_8X16, "%+06d", GY);
-    OLED_Printf(64, 32, OLED_8X16, "%+06d", GZ);
     OLED_Update();
-
-
-
-
 
 
 
@@ -193,11 +204,18 @@ void SystemClock_Config(void)
 /* USER CODE BEGIN 4 */
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
-{   //判断是否为TIM1的中断
+{   static uint8_t count;
+  //判断是否为TIM1的中断
     if (htim->Instance == TIM1)   // 判断是否为 TIM1 触发的更新中断
     {
-       MPU6050_GetData(&AX, &AY, &AZ, &GX, &GY, &GZ);
-      Key_loop();               // 你的按键扫描函数
+      MPU6050_GetData(&AX, &AY, &AZ, &GX, &GY, &GZ);
+      count++;
+      if(count>=60)
+      {
+        speedl = Encoder_Get(1); 
+        speedr = Encoder_Get(2);
+      }
+      Key_loop();            
     }
 }
 
