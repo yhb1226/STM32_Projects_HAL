@@ -1,9 +1,8 @@
 /* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file           : main.h
-  * @brief          : Header for main.c file.
-  *                   This file contains the common defines of the application.
+  * @file    stm32f4xx_it.h
+  * @brief   This file contains the headers of the interrupt handlers.
   ******************************************************************************
   * @attention
   *
@@ -19,15 +18,12 @@
 /* USER CODE END Header */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __MAIN_H
-#define __MAIN_H
+#ifndef __STM32F4xx_IT_H
+#define __STM32F4xx_IT_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-/* Includes ------------------------------------------------------------------*/
-#include "stm32f1xx_hal.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -50,44 +46,21 @@ extern "C" {
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/
-void Error_Handler(void);
-
+void NMI_Handler(void);
+void HardFault_Handler(void);
+void MemManage_Handler(void);
+void BusFault_Handler(void);
+void UsageFault_Handler(void);
+void SVC_Handler(void);
+void DebugMon_Handler(void);
+void PendSV_Handler(void);
+void SysTick_Handler(void);
 /* USER CODE BEGIN EFP */
 
 /* USER CODE END EFP */
-
-/* Private defines -----------------------------------------------------------*/
-#define KEY1_Pin GPIO_PIN_4
-#define KEY1_GPIO_Port GPIOA
-#define KEY2_Pin GPIO_PIN_5
-#define KEY2_GPIO_Port GPIOA
-#define KEY3_Pin GPIO_PIN_0
-#define KEY3_GPIO_Port GPIOB
-#define KEY4_Pin GPIO_PIN_1
-#define KEY4_GPIO_Port GPIOB
-#define IIC_SCL_Pin GPIO_PIN_10
-#define IIC_SCL_GPIO_Port GPIOB
-#define IIC_SDA_Pin GPIO_PIN_11
-#define IIC_SDA_GPIO_Port GPIOB
-#define MOTOR_LEFT1_Pin GPIO_PIN_12
-#define MOTOR_LEFT1_GPIO_Port GPIOB
-#define MOTOR_LEFT2_Pin GPIO_PIN_13
-#define MOTOR_LEFT2_GPIO_Port GPIOB
-#define MOTOR_RIGHT1_Pin GPIO_PIN_14
-#define MOTOR_RIGHT1_GPIO_Port GPIOB
-#define MOTOR_RIGHT2_Pin GPIO_PIN_15
-#define MOTOR_RIGHT2_GPIO_Port GPIOB
-#define SCL_Pin GPIO_PIN_8
-#define SCL_GPIO_Port GPIOB
-#define SDA_Pin GPIO_PIN_9
-#define SDA_GPIO_Port GPIOB
-
-/* USER CODE BEGIN Private defines */
-
-/* USER CODE END Private defines */
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __MAIN_H */
+#endif /* __STM32F4xx_IT_H */

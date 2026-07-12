@@ -27,7 +27,7 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32f1xx_hal.h"
+#include "stm32f4xx_hal.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -57,30 +57,6 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define KEY1_Pin GPIO_PIN_4
-#define KEY1_GPIO_Port GPIOA
-#define KEY2_Pin GPIO_PIN_5
-#define KEY2_GPIO_Port GPIOA
-#define KEY3_Pin GPIO_PIN_0
-#define KEY3_GPIO_Port GPIOB
-#define KEY4_Pin GPIO_PIN_1
-#define KEY4_GPIO_Port GPIOB
-#define IIC_SCL_Pin GPIO_PIN_10
-#define IIC_SCL_GPIO_Port GPIOB
-#define IIC_SDA_Pin GPIO_PIN_11
-#define IIC_SDA_GPIO_Port GPIOB
-#define MOTOR_LEFT1_Pin GPIO_PIN_12
-#define MOTOR_LEFT1_GPIO_Port GPIOB
-#define MOTOR_LEFT2_Pin GPIO_PIN_13
-#define MOTOR_LEFT2_GPIO_Port GPIOB
-#define MOTOR_RIGHT1_Pin GPIO_PIN_14
-#define MOTOR_RIGHT1_GPIO_Port GPIOB
-#define MOTOR_RIGHT2_Pin GPIO_PIN_15
-#define MOTOR_RIGHT2_GPIO_Port GPIOB
-#define SCL_Pin GPIO_PIN_8
-#define SCL_GPIO_Port GPIOB
-#define SDA_Pin GPIO_PIN_9
-#define SDA_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 
