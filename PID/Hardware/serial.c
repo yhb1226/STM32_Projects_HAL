@@ -88,14 +88,3 @@ uint8_t Serial_GetRxData(void)
     return Serial_RxData;
 }
 
-/* 接收中断回调（自动由 HAL_UART_IRQHandler 调用） */
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
-{
-    if (huart->Instance == USART1)
-    {
-        Serial_RxData = huart->Instance->DR;  // 或直接使用全局接收缓冲区
-        Serial_RxFlag = 1;
-        // 重新启动中断接收，准备接收下一个字节
-        HAL_UART_Receive_IT(&huart1, (uint8_t *)&Serial_RxData, 1);
-    }
-}

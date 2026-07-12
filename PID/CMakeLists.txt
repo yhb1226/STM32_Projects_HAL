@@ -57,6 +57,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Hardware/motor.c
     Hardware/encoder.c
     Hardware/serial.c
+    Hardware/blueserial.c
 )
 
 # Add include paths

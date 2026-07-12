@@ -31,6 +31,7 @@
 #include "motor.h"
 #include "encoder.h"
 #include "serial.h"
+#include "blueserial.h"
 #include <stdint.h>
 /* USER CODE END Includes */
 
@@ -68,6 +69,9 @@ void SystemClock_Config(void);
   int8_t PWM_L=30,PWM_R=30;
   int speedl = 0,speedr = 0;
   extern volatile uint8_t Serial_RxData;
+  extern volatile uint8_t Serial_RxFlag;
+  extern volatile uint8_t BlueSerial_RxFlag;
+  extern volatile uint8_t BlueSerial_RxByte;   // 单字节接收缓冲区
 /* USER CODE END 0 */
 
 /**
@@ -104,6 +108,7 @@ int main(void)
   MX_TIM3_Init();
   MX_TIM4_Init();
   MX_USART1_UART_Init();
+  MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
   //初始化放在开启时钟之后和GPIO初始化之后
   OLED_Init();
@@ -117,6 +122,7 @@ int main(void)
   HAL_TIM_Encoder_Start(&htim3, TIM_CHANNEL_ALL);
   HAL_TIM_Encoder_Start(&htim4, TIM_CHANNEL_ALL);
   HAL_UART_Receive_IT(&huart1, (uint8_t *)&Serial_RxData, 1);
+  HAL_UART_Receive_IT(&huart2, (uint8_t *)&Serial_RxData, 1);
   Serial_SendString("Hello");
   Serial_Printf("world");
   /* USER CODE END 2 */
@@ -143,7 +149,10 @@ int main(void)
       OLED_Update();
     }
 
-    
+     Serial_Printf("Hello from STM32\r\n");
+      HAL_Delay(1000);   // 每隔1秒发送一次
+
+
     __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 50);
     __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, 50);
 
@@ -248,8 +257,53 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
 
 
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+    // ==================== USART1：蓝牙模块 ====================
+    if (huart->Instance == USART1)
+    {
+        static uint8_t RxState = 0;
+        static uint8_t pRxPacket = 0;
+        uint8_t RxData = BlueSerial_RxByte;
 
-
+        if (RxState == 0)
+        {
+            if (RxData == '[' && BlueSerial_RxFlag == 0)
+            {
+                RxState = 1;
+                pRxPacket = 0;
+            }
+        }
+        else if (RxState == 1)
+        {
+            if (RxData == ']')
+            {
+                RxState = 0;
+                BlueSerial_RxPacket[pRxPacket] = '\0';
+                BlueSerial_RxFlag = 1;
+            }
+            else
+            {
+                if (pRxPacket < BLUESERIAL_RX_PACKET_SIZE - 1)
+                {
+                    BlueSerial_RxPacket[pRxPacket] = RxData;
+                    pRxPacket++;
+                }
+            }
+        }
+        // 继续接收下一个字节
+        HAL_UART_Receive_IT(&huart1, (uint8_t *)&BlueSerial_RxByte, 1);
+    }
+    // ==================== USART2：普通串口 ====================
+    else if (huart->Instance == USART2)
+    {
+        // 原来普通串口的中断处理：收一个字节，存到 Serial_RxData，置标志
+        Serial_RxData = (uint8_t)(huart->Instance->DR);  // 或者用 __HAL_UART_GET_DATA(huart)
+        Serial_RxFlag = 1;
+        // 继续接收下一个字节
+        HAL_UART_Receive_IT(&huart2, (uint8_t *)&Serial_RxData, 1);
+    }
+}
 /* USER CODE END 4 */
 
 /**
