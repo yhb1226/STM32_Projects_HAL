@@ -11,22 +11,12 @@ uint8_t Key_GetState(void)
 {
     uint8_t number = 0;
 
-    // HAL_GPIO_WritePin(ROW1_GPIO_Port, ROW1_Pin, GPIO_PIN_SET);
-    // HAL_GPIO_WritePin(ROW2_GPIO_Port, ROW2_Pin, GPIO_PIN_RESET);
-    // //HAL_Delay(10);
-    // if(HAL_GPIO_ReadPin(Column1_GPIO_Port, Column1_Pin) == 0){number = 1;}
-    // if(HAL_GPIO_ReadPin(Column2_GPIO_Port, Column2_Pin) == 0){number = 2;}
-    
+    if(HAL_GPIO_ReadPin(KEY1_GPIO_Port, KEY1_Pin) == 0){number = 1;}
+    if(HAL_GPIO_ReadPin(KEY2_GPIO_Port, KEY2_Pin) == 0){number = 2;}
+    if(HAL_GPIO_ReadPin(KEY3_GPIO_Port, KEY3_Pin) == 0){number = 3;}
+    if(HAL_GPIO_ReadPin(KEY4_GPIO_Port, KEY4_Pin) == 0){number = 4;}
 
-    // HAL_GPIO_WritePin(ROW1_GPIO_Port, ROW1_Pin, GPIO_PIN_RESET);
-    // HAL_GPIO_WritePin(ROW2_GPIO_Port, ROW2_Pin, GPIO_PIN_SET);
-    // //HAL_Delay(10);
-    // if(HAL_GPIO_ReadPin(Column1_GPIO_Port, Column1_Pin) == 0){number = 3;}
-    // if(HAL_GPIO_ReadPin(Column2_GPIO_Port, Column2_Pin) == 0){number = 4;}
-
-    // HAL_GPIO_WritePin(ROW1_GPIO_Port, ROW1_Pin, GPIO_PIN_SET);
-    // HAL_GPIO_WritePin(ROW1_GPIO_Port, ROW2_Pin, GPIO_PIN_SET);
-    // return number;
+     return number;
 }
 
 void Key_loop(void)

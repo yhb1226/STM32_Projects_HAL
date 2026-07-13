@@ -121,8 +121,9 @@ int main(void)
   HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
   HAL_TIM_Encoder_Start(&htim3, TIM_CHANNEL_ALL);
   HAL_TIM_Encoder_Start(&htim4, TIM_CHANNEL_ALL);
-  HAL_UART_Receive_IT(&huart1, (uint8_t *)&Serial_RxData, 1);
-  HAL_UART_Receive_IT(&huart2, (uint8_t *)&Serial_RxData, 1);
+  // 正确写法：蓝牙用 BlueSerial_RxByte，普通串口用 Serial_RxData
+  HAL_UART_Receive_IT(&huart1, (uint8_t *)&BlueSerial_RxByte, 1); // 蓝牙
+  HAL_UART_Receive_IT(&huart2, (uint8_t *)&Serial_RxData, 1);     // 有线串口
   Serial_SendString("Hello");
   Serial_Printf("world");
   /* USER CODE END 2 */
@@ -141,16 +142,17 @@ int main(void)
 			 if(KeyNum==4){PWM_R += 10;}
 
     }
+    BlueSerial_Printf("1");
+    HAL_Delay(1000);
+    // if(Serial_GetRxFlag() == 1)
+    // {
+    //   uint8_t RxData = Serial_GetRxData();
+    //   OLED_Printf(0, 0, OLED_6X8, "RxData:%02X", RxData);
+    //   OLED_Update();
+    // }
 
-    if(Serial_GetRxFlag() == 1)
-    {
-      uint8_t RxData = Serial_GetRxData();
-      OLED_Printf(0, 0, OLED_6X8, "RxData:%02X", RxData);
-      OLED_Update();
-    }
-
-     Serial_Printf("Hello from STM32\r\n");
-      HAL_Delay(1000);   // 每隔1秒发送一次
+    //  Serial_Printf("Hello from STM32\r\n");
+    //   HAL_Delay(1000);   // 每隔1秒发送一次
 
 
     __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 50);
