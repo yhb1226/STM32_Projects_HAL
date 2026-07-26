@@ -18,7 +18,7 @@ volatile uint8_t BlueSerial_RxByte;   // 单字节接收缓冲区
 void BlueSerial_SendByte(uint8_t Byte)
 {
     HAL_UART_Transmit(&huart1, &Byte, 1, HAL_MAX_DELAY);
-}
+} 
 
 void BlueSerial_SendArray(uint8_t *Array, uint16_t Length)
 {
