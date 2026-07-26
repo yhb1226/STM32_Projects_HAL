@@ -29,7 +29,7 @@ void BlueSerial_SendString(char *String)
 {
     HAL_UART_Transmit(&huart1, (uint8_t *)String, strlen(String), HAL_MAX_DELAY);
 }
-
+ 
 uint32_t BlueSerial_Pow(uint32_t X, uint32_t Y)
 {
     uint32_t Result = 1;

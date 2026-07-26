@@ -273,7 +273,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
         {
             if (RxData == '[' && BlueSerial_RxFlag == 0)
             {
-                RxState = 1;
+                RxState = 1; 
                 pRxPacket = 0;
             }
         }
