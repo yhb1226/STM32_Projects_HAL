@@ -10,7 +10,7 @@ uint8_t key_last = 0;
 uint8_t Key_GetState(void)
 {
     uint8_t number = 0;
-
+ 
     if(HAL_GPIO_ReadPin(KEY1_GPIO_Port, KEY1_Pin) == 0){number = 1;}
     if(HAL_GPIO_ReadPin(KEY2_GPIO_Port, KEY2_Pin) == 0){number = 2;}
     if(HAL_GPIO_ReadPin(KEY3_GPIO_Port, KEY3_Pin) == 0){number = 3;}
