@@ -9,7 +9,7 @@ void Motor_SetPWM(uint8_t n, int8_t PWM)
 	{
 		if (PWM >= 0)							//如果设置正转的PWM
 		{
-            HAL_GPIO_WritePin(MOTOR_LEFT1_GPIO_Port, MOTOR_LEFT1_Pin, GPIO_PIN_SET);//PB12置高电平
+            HAL_GPIO_WritePin(MOTOR_LEFT1_GPIO_Port, MOTOR_LEFT1_Pin, GPIO_PIN_SET); //PB12置高电平
             HAL_GPIO_WritePin(MOTOR_LEFT2_GPIO_Port, MOTOR_LEFT2_Pin, GPIO_PIN_RESET);//PB13置低电平
 			__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, PWM);//设置PWM占空比
 		}
