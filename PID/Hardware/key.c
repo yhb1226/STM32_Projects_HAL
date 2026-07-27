@@ -16,7 +16,7 @@ uint8_t Key_GetState(void)
     if(HAL_GPIO_ReadPin(KEY3_GPIO_Port, KEY3_Pin) == 0){number = 3;}
     if(HAL_GPIO_ReadPin(KEY4_GPIO_Port, KEY4_Pin) == 0){number = 4;}
 
-     return number;
+    return number;
 }
 
 void Key_loop(void)
