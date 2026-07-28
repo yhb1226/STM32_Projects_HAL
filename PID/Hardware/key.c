@@ -29,7 +29,7 @@ void Key_loop(void)
         {
             key_number = key_stable; 
         }
-        key_last = key_stable; 
+        key_last = key_stable;  
     }
     else
     {
