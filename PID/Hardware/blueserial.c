@@ -1,5 +1,5 @@
-#include "blueserial.h"   // 用自己对应的头文件
-#include "main.h"        // 包含 huart1
+#include "blueserial.h"   
+#include "main.h"        
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
@@ -17,17 +17,17 @@ volatile uint8_t BlueSerial_RxByte;   // 单字节接收缓冲区
 // ------------------------------
 void BlueSerial_SendByte(uint8_t Byte)
 {
-    HAL_UART_Transmit(&huart1, &Byte, 1, HAL_MAX_DELAY);
-} 
+    HAL_UART_Transmit(&huart2, &Byte, 1, HAL_MAX_DELAY);   // 改成 &huart2
+}
 
 void BlueSerial_SendArray(uint8_t *Array, uint16_t Length)
 {
-    HAL_UART_Transmit(&huart1, Array, Length, HAL_MAX_DELAY);
+    HAL_UART_Transmit(&huart2, Array, Length, HAL_MAX_DELAY);
 }
 
 void BlueSerial_SendString(char *String)
 {
-    HAL_UART_Transmit(&huart1, (uint8_t *)String, strlen(String), HAL_MAX_DELAY);
+    HAL_UART_Transmit(&huart2, (uint8_t *)String, strlen(String), HAL_MAX_DELAY);
 }
  
 uint32_t BlueSerial_Pow(uint32_t X, uint32_t Y)

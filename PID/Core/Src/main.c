@@ -21,7 +21,7 @@
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
-
+#include <string.h>
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "oled.h"
@@ -66,7 +66,7 @@ void SystemClock_Config(void);
 /* USER CODE BEGIN 0 */
   int16_t AX,AY,AZ,GX,GY,GZ;
   int number = 0,KeyNum = 0;
-  int8_t PWM_L=30,PWM_R=30;
+  int8_t PWM_L=0,PWM_R=0;
   int speedl = 0,speedr = 0;
   extern volatile uint8_t Serial_RxData;
   extern volatile uint8_t Serial_RxFlag;
@@ -123,8 +123,8 @@ int main(void)
   HAL_TIM_Encoder_Start(&htim3, TIM_CHANNEL_ALL);
   HAL_TIM_Encoder_Start(&htim4, TIM_CHANNEL_ALL);
   // 正确写法：蓝牙用 BlueSerial_RxByte，普通串口用 Serial_RxData
-  HAL_UART_Receive_IT(&huart1, (uint8_t *)&BlueSerial_RxByte, 1); // 蓝牙
-  HAL_UART_Receive_IT(&huart2, (uint8_t *)&Serial_RxData, 1);     // 有线串口
+  HAL_UART_Receive_IT(&huart2, (uint8_t *)&BlueSerial_RxByte, 1); // 蓝牙
+  HAL_UART_Receive_IT(&huart1, (uint8_t *)&Serial_RxData, 1);     // 有线串口
   Serial_SendString("Hello");
   Serial_Printf("world");
   /* USER CODE END 2 */
@@ -138,13 +138,13 @@ int main(void)
     if (KeyNum!=0)
     {
 			 if(KeyNum==1){PWM_L += 10;}
-			 if(KeyNum==2){PWM_L += 10;}
+			 if(KeyNum==2){PWM_L -= 10;}
 			 if(KeyNum==3){PWM_R += 10;}
-			 if(KeyNum==4){PWM_R += 10;}
+			 if(KeyNum==4){PWM_R -= 10;}
 
     }
-    BlueSerial_Printf("1");
-    HAL_Delay(1000);
+    // BlueSerial_Printf("1");
+    // HAL_Delay(1000);
     // if(Serial_GetRxFlag() == 1)
     // {
     //   uint8_t RxData = Serial_GetRxData();
@@ -154,18 +154,27 @@ int main(void)
 
     //  Serial_Printf("Hello from STM32\r\n");
     //   HAL_Delay(1000);   // 每隔1秒发送一次
+    // 检测蓝牙是否收到完整数据包
+    if (BlueSerial_RxFlag == 1)
+    {
+        BlueSerial_RxFlag = 0;   // 清除标志
 
+        // 判断收到的内容是否为 "1"
+        if (strcmp(BlueSerial_RxPacket, "1") == 0)
+        {
+            // 执行你想做的事情，比如切换 LED
+            PWM_L += 10;
+            
+            // 回复手机确认
+            //BlueSerial_Printf("收到指令，LED已切换\r\n");
+        }
+    }
 
-    __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 50);
-    __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, 50);
+    Motor_SetPWM(1, PWM_L);
+    Motor_SetPWM(2, PWM_R);
 
-    HAL_GPIO_WritePin(MOTOR_LEFT1_GPIO_Port, MOTOR_LEFT1_Pin, GPIO_PIN_SET);//PB12置高电平
-    HAL_GPIO_WritePin(MOTOR_LEFT2_GPIO_Port, MOTOR_LEFT2_Pin, GPIO_PIN_RESET);//PB13置低电平
-    // Motor_SetPWM(1, PWM_L);
-    // Motor_SetPWM(2, PWM_R);
-
-    //  OLED_ShowNum(0,0,speedl,6,OLED_6X8);
-    //  OLED_ShowNum(0,0,speedr,6,OLED_6X8);
+    OLED_ShowNum(0,0,PWM_L,2,OLED_6X8);
+    OLED_ShowNum(0,10,PWM_R,2,OLED_6X8);
 	  
     OLED_Update();
 
@@ -262,8 +271,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-    // ==================== USART1：蓝牙模块 ====================
-    if (huart->Instance == USART1)
+    // ==================== USART2：蓝牙模块 ====================
+    if (huart->Instance == USART2)
     {
         static uint8_t RxState = 0;
         static uint8_t pRxPacket = 0;
@@ -294,17 +303,8 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
                 }
             }
         }
-        // 继续接收下一个字节
-        HAL_UART_Receive_IT(&huart1, (uint8_t *)&BlueSerial_RxByte, 1);
-    }
-    // ==================== USART2：普通串口 ====================
-    else if (huart->Instance == USART2)
-    {
-        // 原来普通串口的中断处理：收一个字节，存到 Serial_RxData，置标志
-        Serial_RxData = (uint8_t)(huart->Instance->DR);  // 或者用 __HAL_UART_GET_DATA(huart)
-        Serial_RxFlag = 1;
-        // 继续接收下一个字节
-        HAL_UART_Receive_IT(&huart2, (uint8_t *)&Serial_RxData, 1);
+        // 继续接收下一个字节（注意这里是 &huart2）
+        HAL_UART_Receive_IT(&huart2, (uint8_t *)&BlueSerial_RxByte, 1);
     }
 }
 /* USER CODE END 4 */
